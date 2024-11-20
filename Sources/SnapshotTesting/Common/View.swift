@@ -1020,7 +1020,7 @@
     ) -> () -> Void {
       let rootViewController: UIViewController
       if viewController != window.rootViewController {
-        rootViewController = UIViewController()
+        rootViewController = RootViewController()
         rootViewController.view.backgroundColor = .clear
         rootViewController.view.frame = window.frame
         rootViewController.view.translatesAutoresizingMaskIntoConstraints =
@@ -1050,8 +1050,8 @@
 
       window.rootViewController = rootViewController
 
-      rootViewController.beginAppearanceTransition(true, animated: false)
-      rootViewController.endAppearanceTransition()
+      viewController.beginAppearanceTransition(true, animated: false)
+      viewController.endAppearanceTransition()
 
       rootViewController.view.setNeedsLayout()
       rootViewController.view.layoutIfNeeded()
@@ -1060,15 +1060,19 @@
       viewController.view.layoutIfNeeded()
 
       return {
-        rootViewController.beginAppearanceTransition(false, animated: false)
+        viewController.beginAppearanceTransition(false, animated: false)
         viewController.willMove(toParent: nil)
         viewController.view.removeFromSuperview()
         viewController.removeFromParent()
         viewController.didMove(toParent: nil)
-        rootViewController.endAppearanceTransition()
+        viewController.endAppearanceTransition()
         window.rootViewController = nil
       }
     }
+
+private final class RootViewController: UIViewController {
+  override var shouldAutomaticallyForwardAppearanceMethods: Bool { false }
+}
 
     private func getKeyWindow() -> UIWindow? {
       var window: UIWindow?
